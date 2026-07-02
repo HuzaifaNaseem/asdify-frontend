@@ -464,7 +464,17 @@ export function AssessmentResultPage({ mode = 'result' }) {
             <section className="ui-card result-doctor-notes anim-fade-up">
               <h2 className="result-section-title">Clinical notes</h2>
               {doctorNotes ? (
-                <div className="result-doctor-notes__body">{typeof doctorNotes === 'string' ? doctorNotes : JSON.stringify(doctorNotes)}</div>
+                <div className="result-doctor-notes__body">
+                  <p style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+                    {typeof doctorNotes === 'string' ? doctorNotes : doctorNotes.text ?? ''}
+                  </p>
+                  {typeof doctorNotes === 'object' && (doctorNotes.author_name || doctorNotes.updated_at) ? (
+                    <p className="muted small" style={{ marginTop: '0.5rem', marginBottom: 0 }}>
+                      —{doctorNotes.author_name ? ` ${doctorNotes.author_name}` : ''}
+                      {doctorNotes.updated_at ? `, ${new Date(doctorNotes.updated_at).toLocaleDateString()}` : ''}
+                    </p>
+                  ) : null}
+                </div>
               ) : (
                 <p className="muted small result-doctor-notes__placeholder">
                   When your care team uses the clinician workflow, their notes for this assessment will appear here. Nothing

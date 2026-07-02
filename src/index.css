@@ -5207,3 +5207,84 @@ input[type="radio"]:focus-visible {
 .audit-table tbody tr:hover {
   background: var(--accent-soft);
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FIXES FROM CLIENT-READY REVIEW
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Global link styling — every plain <Link> had zero base style anywhere
+   in this file, so it fell back to raw browser blue/underline (visible on
+   auth pages: "Forgot password?", "Create an account", consent checkbox
+   text). This is the one missing base rule the whole app needed. ─────────── */
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ─── Page container: give the sticky header real breathing room ────────── */
+.page-container {
+  padding-top: 2.5rem;
+}
+.page-container--centered { padding-top: 0; }
+
+/* ─── Header: fully opaque so nothing can ever show through the bar,
+   independent of backdrop-filter support ───────────────────────────────── */
+.app-header {
+  background: color-mix(in srgb, var(--surface) 97%, transparent);
+}
+
+/* ─── Auth cards: calmer, tighter, more considered ───────────────────────── */
+.auth-card {
+  padding: 2rem 2.25rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+.auth-card .stack--form { gap: 0.85rem; }
+.auth-muted {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem 0.65rem;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+.auth-muted a,
+.auth-muted .link-like {
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-muted a:hover,
+.auth-muted .link-like:hover {
+  text-decoration: underline;
+}
+
+/* Tighter fieldset/radio/checkbox rows so the register form fits without
+   feeling cramped or requiring a full page of scroll */
+.ui-fieldset { padding: 0.7rem 0.9rem; }
+.stack--tight { gap: 0.45rem; }
+.ui-radio-line,
+.ui-check { font-size: 0.9rem; }
+
+/* ─── Section tint & CTA band: were hardcoded to a fixed light teal / fixed
+   dark slate regardless of theme, so in dim mode text landed on a muddy
+   mid-gray with no contrast (the invisible-text bug) and the CTA band had
+   a visible seam against the rest of the dim page. Both now derive from
+   the active theme's own tokens. ────────────────────────────────────────── */
+.lp-section--alt {
+  background: color-mix(in srgb, var(--bg) 90%, var(--accent) 10%);
+}
+:root[data-theme="dark"] .cta-section {
+  background: linear-gradient(165deg, color-mix(in srgb, var(--bg) 90%, black) 0%, color-mix(in srgb, var(--bg) 78%, black) 100%);
+}
+:root[data-theme="dark"] .cta-section::before {
+  background:
+    radial-gradient(ellipse 55% 70% at 25% 20%, rgba(45,212,191,.16) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 70% at 80% 85%, rgba(14,165,233,.14) 0%, transparent 65%);
+}

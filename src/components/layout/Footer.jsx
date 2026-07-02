@@ -15,13 +15,6 @@ const COLS = [
     links: [
       { to: '/about',          label: 'What is ASD?' },
       { to: '/privacy-policy', label: 'Privacy Policy' },
-      { to: '/unauthorized',   label: 'Access Levels' },
-    ],
-  },
-  {
-    title: 'Developers',
-    links: [
-      { to: '/api-status', label: 'API Status' },
     ],
   },
 ]
@@ -59,7 +52,7 @@ export function Footer() {
 
       <div className="app-footer__bottom">
         <p className="app-footer__copy">
-          © {new Date().getFullYear()} Asdify. Built for Final Year Project.
+          © {new Date().getFullYear()} Asdify. All rights reserved.
         </p>
         <p className="app-footer__note">
           Results are a screening aid only — not a clinical diagnosis. Always consult a qualified professional.

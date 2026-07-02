@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 
 import { MainLayout } from '../components/layout/MainLayout'
 import { ProtectedRoute } from './ProtectedRoute'
+import { GuestOnlyRoute } from './GuestOnlyRoute'
 import { LoginPage } from '../pages/auth/LoginPage'
 import { RegisterPage } from '../pages/auth/RegisterPage'
 import { DoctorRegistrationPendingPage } from '../pages/auth/DoctorRegistrationPendingPage'
@@ -41,10 +42,31 @@ export function AppRoutes() {
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/login"
+          element={
+            <GuestOnlyRoute>
+              <LoginPage />
+            </GuestOnlyRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <GuestOnlyRoute>
+              <RegisterPage />
+            </GuestOnlyRoute>
+          }
+        />
         <Route path="/register/pending" element={<DoctorRegistrationPendingPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route
+          path="/forgot-password"
+          element={
+            <GuestOnlyRoute>
+              <ForgotPasswordPage />
+            </GuestOnlyRoute>
+          }
+        />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route

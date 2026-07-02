@@ -1,25 +1,40 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../state/AuthContext'
 
-const COLS = [
-  {
-    title: 'Platform',
-    links: [
-      { to: '/screening',    label: 'Start Screening' },
-      { to: '/register',     label: 'Create Account' },
-      { to: '/login',        label: 'Sign In' },
-      { to: '/about',        label: 'About Asdify' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { to: '/about',          label: 'What is ASD?' },
-      { to: '/privacy-policy', label: 'Privacy Policy' },
-    ],
-  },
-]
+function dashboardPath(role) {
+  if (role === 'admin') return '/admin/dashboard'
+  if (role === 'doctor') return '/doctor/dashboard'
+  return '/dashboard'
+}
+
+function buildCols(user) {
+  return [
+    {
+      title: 'Platform',
+      links: [
+        { to: '/screening', label: 'Start Screening' },
+        ...(user
+          ? [{ to: dashboardPath(user.role), label: 'Dashboard' }]
+          : [
+              { to: '/register', label: 'Create Account' },
+              { to: '/login', label: 'Sign In' },
+            ]),
+        { to: '/about', label: 'About Asdify' },
+      ],
+    },
+    {
+      title: 'Resources',
+      links: [
+        { to: '/about', label: 'What is ASD?' },
+        { to: '/privacy-policy', label: 'Privacy Policy' },
+      ],
+    },
+  ]
+}
 
 export function Footer() {
+  const { user } = useAuth()
+  const COLS = buildCols(user)
   return (
     <footer className="app-footer">
       <div className="app-footer__inner">

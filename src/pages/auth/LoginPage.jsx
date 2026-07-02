@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 import { DocumentTitle } from '../../components/common/DocumentTitle'
+import { GoogleSignInButton } from '../../components/common/GoogleSignInButton'
 import { MetaDescription } from '../../components/common/MetaDescription'
 import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
@@ -10,7 +11,7 @@ import { PageContainer } from '../../components/ui/PageContainer'
 import { useAuth } from '../../state/AuthContext'
 
 export function LoginPage() {
-  const { login } = useAuth()
+  const { login, loginWithGoogle } = useAuth()
   const location = useLocation()
   const from = location.state?.from
   const [email, setEmail] = useState('')
@@ -27,6 +28,18 @@ export function LoginPage() {
       await login(email, password, from)
     } catch (err) {
       setError(err.message ?? 'Could not sign in.')
+    } finally {
+      setPending(false)
+    }
+  }
+
+  async function onGoogleCredential(credential) {
+    setError('')
+    setPending(true)
+    try {
+      await loginWithGoogle(credential, from)
+    } catch (err) {
+      setError(err.message ?? 'Could not sign in with Google.')
     } finally {
       setPending(false)
     }
@@ -92,6 +105,13 @@ export function LoginPage() {
               {pending ? 'Signing in…' : 'Sign in'}
             </Button>
           </form>
+
+          <div className="auth-divider">or</div>
+          <GoogleSignInButton
+            text="signin_with"
+            onCredential={onGoogleCredential}
+            onError={() => setError('Google sign-in failed. Please try again.')}
+          />
 
           <p className="auth-muted">
             New to Asdify? <Link to="/register">Create an account</Link>

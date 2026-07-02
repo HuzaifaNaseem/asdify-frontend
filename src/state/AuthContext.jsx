@@ -47,10 +47,8 @@ export function AuthProvider({ children }) {
     }
   }, [refreshUser])
 
-  const login = useCallback(
-    async (email, password, redirectTo) => {
-      const me = await auth.login(email, password)
-      setUser(me)
+  const redirectAfterAuth = useCallback(
+    (me, redirectTo) => {
       const safe =
         typeof redirectTo === 'string' &&
         redirectTo.startsWith('/') &&
@@ -67,6 +65,24 @@ export function AuthProvider({ children }) {
       else navigate('/dashboard', { replace: true })
     },
     [navigate],
+  )
+
+  const login = useCallback(
+    async (email, password, redirectTo) => {
+      const me = await auth.login(email, password)
+      setUser(me)
+      redirectAfterAuth(me, redirectTo)
+    },
+    [redirectAfterAuth],
+  )
+
+  const loginWithGoogle = useCallback(
+    async (credential, redirectTo) => {
+      const me = await auth.googleLogin(credential)
+      setUser(me)
+      redirectAfterAuth(me, redirectTo)
+    },
+    [redirectAfterAuth],
   )
 
   const register = useCallback(async (payload) => {
@@ -90,11 +106,12 @@ export function AuthProvider({ children }) {
       user,
       ready,
       login,
+      loginWithGoogle,
       logout,
       register,
       refreshUser,
     }),
-    [user, ready, login, logout, register, refreshUser],
+    [user, ready, login, loginWithGoogle, logout, register, refreshUser],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { DocumentTitle } from '../../components/common/DocumentTitle'
+import { GoogleSignInButton } from '../../components/common/GoogleSignInButton'
 import { MetaDescription } from '../../components/common/MetaDescription'
 import { Alert } from '../../components/ui/Alert'
 import { Button } from '../../components/ui/Button'
@@ -15,7 +16,7 @@ const ROLES = [
 ]
 
 export function RegisterPage() {
-  const { register } = useAuth()
+  const { register, loginWithGoogle } = useAuth()
   const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -51,6 +52,19 @@ export function RegisterPage() {
       navigate('/register/pending', { replace: true, state: { email: data.user?.email ?? email } })
     } catch (err) {
       setError(err.message ?? 'Could not register.')
+    } finally {
+      setPending(false)
+    }
+  }
+
+  async function onGoogleCredential(credential) {
+    setError('')
+    setPending(true)
+    try {
+      // Google sign-up always creates/uses a parent account.
+      await loginWithGoogle(credential)
+    } catch (err) {
+      setError(err.message ?? 'Could not sign up with Google.')
     } finally {
       setPending(false)
     }
@@ -142,6 +156,17 @@ export function RegisterPage() {
               {pending ? 'Creating…' : 'Create account'}
             </Button>
           </form>
+
+          {role === 'parent' ? (
+            <>
+              <div className="auth-divider">or</div>
+              <GoogleSignInButton
+                text="signup_with"
+                onCredential={onGoogleCredential}
+                onError={() => setError('Google sign-up failed. Please try again.')}
+              />
+            </>
+          ) : null}
 
           <p className="auth-muted">
             Already registered? <Link to="/login">Sign in</Link>

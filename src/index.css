@@ -1025,6 +1025,31 @@ img, svg { display: block; max-width: 100%; }
   color: var(--accent); font: inherit; cursor: pointer; text-decoration: underline;
 }
 
+/* "or" divider between the credential form and social sign-in */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.15rem 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+/* Google Identity Services renders its own button into this box */
+.google-signin {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
 /* Small right-aligned helper link under a field (e.g. "Forgot password?") */
 .auth-form-aside {
   display: flex;

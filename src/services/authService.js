@@ -7,6 +7,13 @@ export async function login(email, password) {
   return data.user
 }
 
+/** POST /api/auth/google — exchange a Google ID token for an Asdify session. */
+export async function googleLogin(credential) {
+  const { data } = await api.post('/api/auth/google', { credential })
+  writeTokens(data.access_token, data.refresh_token)
+  return data.user
+}
+
 export async function register(payload) {
   const { data } = await api.post('/api/auth/register', payload)
   if (data.access_token && data.refresh_token) {

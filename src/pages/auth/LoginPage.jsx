@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 import { DocumentTitle } from '../../components/common/DocumentTitle'
 import { MetaDescription } from '../../components/common/MetaDescription'
@@ -12,7 +12,6 @@ import { useAuth } from '../../state/AuthContext'
 export function LoginPage() {
   const { login } = useAuth()
   const location = useLocation()
-  const navigate = useNavigate()
   const from = location.state?.from
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -84,19 +83,18 @@ export function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <div className="auth-form-aside">
+              <Link to="/forgot-password" className="auth-form-aside__link">
+                Forgot password?
+              </Link>
+            </div>
             <Button type="submit" disabled={pending}>
               {pending ? 'Signing in…' : 'Sign in'}
             </Button>
           </form>
 
           <p className="auth-muted">
-            <Link to="/forgot-password">Forgot password?</Link>
-            {' · '}
-            <Link to="/register">Create an account</Link>
-            {' · '}
-            <button type="button" className="link-like" onClick={() => navigate(-1)}>
-              Back
-            </button>
+            New to Asdify? <Link to="/register">Create an account</Link>
           </p>
         </div>
       </PageContainer>

@@ -1025,6 +1025,21 @@ img, svg { display: block; max-width: 100%; }
   color: var(--accent); font: inherit; cursor: pointer; text-decoration: underline;
 }
 
+/* Small right-aligned helper link under a field (e.g. "Forgot password?") */
+.auth-form-aside {
+  display: flex;
+  justify-content: flex-end;
+  margin: -0.35rem 0 0.15rem;
+}
+.auth-form-aside__link {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--dur-fast);
+}
+.auth-form-aside__link:hover { color: var(--accent); }
+
 /* ─── Landing — pill badge ───────────────────────────────────────────────── */
 .pill-badge {
   display: inline-flex;

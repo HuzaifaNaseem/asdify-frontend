@@ -1,16 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../../state/AuthContext'
 import { useTheme } from '../../state/ThemeContext'
-import { IconClose, IconMenu } from '../icons/DecorativeIcons'
+import { IconChevronDown, IconClose, IconMenu } from '../icons/DecorativeIcons'
 
 const linkClass = ({ isActive }) =>
   ['nav-link', isActive ? 'nav-link--active' : ''].filter(Boolean).join(' ')
+
+const menuLinkClass = ({ isActive }) =>
+  ['user-menu__link', isActive ? 'user-menu__link--active' : ''].filter(Boolean).join(' ')
 
 function dashboardPath(role) {
   if (role === 'admin') return '/admin/dashboard'
   if (role === 'doctor') return '/doctor/dashboard'
   return '/dashboard'
+}
+
+function roleMenuLinks(role) {
+  if (role === 'doctor') return [{ to: '/doctor/patients', label: 'Patients' }]
+  if (role === 'admin') {
+    return [
+      { to: '/admin/users', label: 'Users' },
+      { to: '/admin/reports', label: 'Reports' },
+    ]
+  }
+  return [
+    { to: '/dashboard/asd-tests', label: 'ASD tests' },
+    { to: '/history', label: 'History' },
+  ]
+}
+
+function initials(fullName) {
+  const parts = (fullName || '').trim().split(/\s+/).filter(Boolean)
+  if (!parts.length) return '?'
+  const first = parts[0][0]
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : ''
+  return (first + last).toUpperCase()
 }
 
 export function Header() {
@@ -19,10 +44,31 @@ export function Header() {
   const location = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [navOpen, setNavOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const userMenuRef = useRef(null)
 
   useEffect(() => {
     setNavOpen(false)
+    setUserMenuOpen(false)
   }, [location.pathname])
+
+  useEffect(() => {
+    if (!userMenuOpen) return undefined
+    const onDocClick = (e) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false)
+      }
+    }
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setUserMenuOpen(false)
+    }
+    document.addEventListener('mousedown', onDocClick)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', onDocClick)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [userMenuOpen])
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 12)
@@ -94,17 +140,6 @@ export function Header() {
           <NavLink to="/privacy-policy" className={linkClass} onClick={() => setNavOpen(false)}>
             Privacy
           </NavLink>
-          {user?.role === 'parent' ? (
-            <>
-              <NavLink to="/dashboard/asd-tests" className={linkClass} onClick={() => setNavOpen(false)}>
-                ASD tests
-              </NavLink>
-              <NavLink to="/history" className={linkClass} onClick={() => setNavOpen(false)}>
-                History
-              </NavLink>
-            </>
-          ) : null}
-
           <button
             type="button"
             className="theme-toggle"
@@ -125,40 +160,68 @@ export function Header() {
           </button>
 
           {user ? (
-            <>
-              {user.role === 'doctor' ? (
-                <NavLink to="/doctor/patients" className={linkClass} onClick={() => setNavOpen(false)}>
-                  Patients
-                </NavLink>
-              ) : null}
-              {user.role === 'admin' ? (
-                <>
-                  <NavLink to="/admin/users" className={linkClass} onClick={() => setNavOpen(false)}>
-                    Users
-                  </NavLink>
-                  <NavLink to="/admin/reports" className={linkClass} onClick={() => setNavOpen(false)}>
-                    Reports
-                  </NavLink>
-                </>
-              ) : null}
-              <NavLink to={dashboardPath(user.role)} className={linkClass} onClick={() => setNavOpen(false)}>
-                Dashboard
-              </NavLink>
-              <NavLink to="/profile" className={linkClass} onClick={() => setNavOpen(false)}>
-                Profile
-              </NavLink>
+            <div className="user-menu" ref={userMenuRef}>
               <button
                 type="button"
-                className="nav-link nav-btn"
-                style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                onClick={() => {
-                  setNavOpen(false)
-                  void logout()
-                }}
+                className="user-menu__trigger"
+                aria-haspopup="menu"
+                aria-expanded={userMenuOpen}
+                onClick={() => setUserMenuOpen((o) => !o)}
               >
-                Sign out
+                <span className="user-menu__avatar" aria-hidden="true">{initials(user.full_name)}</span>
+                <span className="user-menu__name">{(user.full_name || '').split(/\s+/)[0] || 'Account'}</span>
+                <IconChevronDown className={`user-menu__chevron${userMenuOpen ? ' user-menu__chevron--open' : ''}`} />
               </button>
-            </>
+
+              {userMenuOpen ? (
+                <div className="user-menu__panel" role="menu">
+                  <div className="user-menu__header">
+                    <p className="user-menu__full-name">{user.full_name}</p>
+                    <p className="user-menu__email">{user.email}</p>
+                  </div>
+                  <NavLink
+                    to={dashboardPath(user.role)}
+                    className={menuLinkClass}
+                    role="menuitem"
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    Dashboard
+                  </NavLink>
+                  {roleMenuLinks(user.role).map((l) => (
+                    <NavLink
+                      key={l.to}
+                      to={l.to}
+                      className={menuLinkClass}
+                      role="menuitem"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      {l.label}
+                    </NavLink>
+                  ))}
+                  <NavLink
+                    to="/profile"
+                    className={menuLinkClass}
+                    role="menuitem"
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    Profile
+                  </NavLink>
+                  <div className="user-menu__divider" role="separator" />
+                  <button
+                    type="button"
+                    className="user-menu__link user-menu__link--danger"
+                    role="menuitem"
+                    onClick={() => {
+                      setUserMenuOpen(false)
+                      setNavOpen(false)
+                      void logout()
+                    }}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              ) : null}
+            </div>
           ) : (
             <>
               <NavLink to="/login" className={linkClass} onClick={() => setNavOpen(false)}>

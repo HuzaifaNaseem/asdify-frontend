@@ -257,3 +257,11 @@ export function IconClose(props) {
     </svg>
   )
 }
+
+export function IconChevronDown(props) {
+  return (
+    <svg {...baseProps(props)}>
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  )
+}

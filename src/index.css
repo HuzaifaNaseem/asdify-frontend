@@ -284,6 +284,123 @@ img, svg { display: block; max-width: 100%; }
   padding: 0.35rem 0.85rem !important;
 }
 
+/* ─── Header: account dropdown ───────────────────────────────────────────── */
+.user-menu {
+  position: relative;
+  margin-left: 0.25rem;
+}
+.user-menu__trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem 0.3rem 0.3rem;
+  cursor: pointer;
+  color: var(--text);
+  transition: border-color var(--dur-fast), background var(--dur-fast);
+}
+.user-menu__trigger:hover,
+.user-menu__trigger:focus-visible {
+  border-color: var(--border-soft);
+  background: var(--accent-soft);
+}
+.user-menu__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--grad-cta);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+.user-menu__name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-h);
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-menu__chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  transition: transform var(--dur-fast);
+}
+.user-menu__chevron--open { transform: rotate(180deg); }
+
+.user-menu__panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 15rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  z-index: 60;
+  animation: user-menu-in 0.15s var(--ease) both;
+}
+@keyframes user-menu-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.user-menu__header {
+  padding: 0.4rem 0.6rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.35rem;
+}
+.user-menu__full-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-h);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-menu__email {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-menu__link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.55rem 0.6rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+.user-menu__link:hover { background: var(--accent-soft); color: var(--text-h); }
+.user-menu__link--active { color: var(--accent); font-weight: 600; }
+.user-menu__link--danger { color: var(--error); }
+.user-menu__link--danger:hover { background: var(--error-bg); }
+.user-menu__divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.35rem 0.25rem;
+}
+
 /* Shared SVG icons (DecorativeIcons.jsx) */
 .decorative-icon {
   display: block;
@@ -398,6 +515,23 @@ img, svg { display: block; max-width: 100%; }
     width: 100%;
     border-radius: 10px;
     margin-top: 0.15rem;
+  }
+  .app-nav .user-menu {
+    margin: 0.5rem 0 0;
+    width: 100%;
+  }
+  .app-nav .user-menu__trigger {
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 10px;
+  }
+  .app-nav .user-menu__panel {
+    position: static;
+    box-shadow: none;
+    border: none;
+    background: var(--surface-2);
+    margin-top: 0.35rem;
+    animation: none;
   }
 }
 

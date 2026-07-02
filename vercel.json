@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/api/:path*", "destination": "https://asdify-api.duckdns.org/api/:path*" },
+    { "source": "/api/:path*", "destination": "https://92.4.79.197.sslip.io/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [

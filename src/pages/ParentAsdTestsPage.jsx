@@ -21,7 +21,7 @@ const TEST_OPTIONS = [
   {
     key: 'video',
     title: 'Video assessment',
-    description: 'Upload a 30–60 second clip for future video-based analysis. Demo results are shown today.',
+    description: 'Upload a 30–60 second clip for AI video and audio analysis — real model inference, not a placeholder.',
     to: '/assessment/video',
     icon: IconVideo,
   },

@@ -94,34 +94,36 @@
 }
 
 :root[data-theme="dark"] {
+  /* "Dim" palette — soft charcoal-navy, not nea-black. Easier on the eyes,
+     reads as considered/premium rather than harsh OLED-black. */
   color-scheme: dark;
-  --text:       #cbd5e1;
-  --text-muted: #64748b;
-  --text-h:     #f1f5f9;
-  --bg:         #0a0f14;
-  --surface:    #111827;
-  --surface-2:  #1e293b;
-  --border:     #1e293b;
-  --border-soft: rgba(45, 212, 191, 0.12);
+  --text:       #c7d2dd;
+  --text-muted: #8695a7;
+  --text-h:     #eef2f6;
+  --bg:         #17212b;
+  --surface:    #1e2c38;
+  --surface-2:  #263847;
+  --border:     #324457;
+  --border-soft: rgba(45, 212, 191, 0.16);
 
   --accent:       var(--c-teal-400);
   --accent-light: #5eead4;
   --accent-hover: #2dd4bf;
-  --accent-soft:  rgba(45, 212, 191, 0.12);
-  --accent-glow:  rgba(45, 212, 191, 0.2);
+  --accent-soft:  rgba(45, 212, 191, 0.14);
+  --accent-glow:  rgba(45, 212, 191, 0.22);
 
-  --grad-hero: linear-gradient(145deg, #0d1f2d 0%, #0a1f1e 40%, #0d1f2d 100%);
-  --grad-card: linear-gradient(145deg, #111827 0%, #0f2420 100%);
-  --grad-cta:  linear-gradient(135deg, #0f766e 0%, #0369a1 100%);
+  --grad-hero: linear-gradient(145deg, #1a2c33 0%, #172d2b 40%, #1a2733 100%);
+  --grad-card: linear-gradient(145deg, #1e2c38 0%, #1c332f 100%);
+  --grad-cta:  linear-gradient(135deg, #14b8a6 0%, #0284c7 100%);
 
-  --success-bg: #064e3b;
-  --error-bg:   #450a0a;
-  --info-bg:    #0c2a40;
+  --success-bg: #164e3f;
+  --error-bg:   #4c1d1d;
+  --info-bg:    #163a52;
 
-  --shadow:     0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-md:  0 8px 32px rgba(0, 0, 0, 0.45);
-  --shadow-lg:  0 20px 60px rgba(0, 0, 0, 0.5);
-  --shadow-teal: 0 8px 24px rgba(45, 212, 191, 0.18);
+  --shadow:     0 4px 20px rgba(0, 0, 0, 0.28);
+  --shadow-md:  0 8px 32px rgba(0, 0, 0, 0.32);
+  --shadow-lg:  0 20px 60px rgba(0, 0, 0, 0.38);
+  --shadow-teal: 0 8px 24px rgba(45, 212, 191, 0.22);
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────────────── */
@@ -4806,7 +4808,9 @@ img, svg { display: block; max-width: 100%; }
   background: color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
-/* Editorial display type for big headlines; UI chrome stays on the geometric sans */
+/* Editorial display type for big headlines; UI chrome stays on the geometric sans.
+   Covers every h1/page-heading class in the app — audited via grep so no page
+   is left on the old fallback font. */
 .hero__title,
 .section-title,
 .cta-title,
@@ -4817,9 +4821,14 @@ img, svg { display: block; max-width: 100%; }
 .admin-portal__title,
 .profile-page__title,
 .result-page__title,
-.result-hero__risk {
+.result-hero__risk,
+.about-hero__title,
+.asd-tests-hub__title,
+.video-assessment-page__title,
+.page-title {
   font-family: var(--serif);
   font-optical-sizing: auto;
+  font-weight: 600;
 }
 
 /* ─── Header polish ──────────────────────────────────────────────────────── */
@@ -5084,4 +5093,117 @@ img, svg { display: block; max-width: 100%; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FORM CONTROLS — selects/checkboxes/radios were unstyled browser defaults
+   (found during full-site review); style them to match .ui-input.
+   ══════════════════════════════════════════════════════════════════════════ */
+select {
+  width: 100%;
+  padding: 0.65rem 2.4rem 0.65rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background-color: var(--surface);
+  color: var(--text-h);
+  font: inherit;
+  font-size: 0.95rem;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  cursor: pointer;
+  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+  box-shadow: inset 0 1px 2px rgba(15,23,42,0.04);
+}
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: inset 0 1px 2px rgba(15,23,42,0.04), 0 0 0 3px var(--accent-soft);
+}
+select:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--dur-fast), border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+input[type="checkbox"] { border-radius: 5px; }
+input[type="radio"] { border-radius: 50%; }
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  background: var(--grad-cta);
+  border-color: transparent;
+}
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 3px; top: 0px;
+  width: 5px; height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: #fff;
+}
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* ─── Auth pages: subtle ambient glow instead of flat gray ──────────────── */
+.page-narrow {
+  position: relative;
+}
+.auth-card {
+  position: relative;
+  z-index: 1;
+}
+.page-container:has(.auth-card)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 45% 40% at 50% 0%, var(--accent-glow) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 35% at 85% 90%, color-mix(in srgb, var(--c-sky-400) 18%, transparent) 0%, transparent 70%);
+}
+
+/* ─── Dashboard stat numbers: editorial treatment, matches landing stats ── */
+.dashboard-stat-card__value,
+.doctor-stat-card__value,
+.admin-stat-card__value {
+  font-family: var(--serif);
+  font-weight: 600;
+  background: var(--grad-cta);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Tables: row hover + softer separators ──────────────────────────────── */
+.admin-table tbody tr,
+.audit-table tbody tr {
+  transition: background var(--dur-fast) var(--ease);
+}
+.admin-table tbody tr:hover,
+.audit-table tbody tr:hover {
+  background: var(--accent-soft);
 }

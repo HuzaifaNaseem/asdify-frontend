@@ -59,7 +59,8 @@ export function AdminDashboardPage() {
   const firstName = useMemo(() => {
     const raw = (user?.full_name || '').trim()
     if (!raw) return 'Admin'
-    return raw.split(/\s+/)[0]
+    const tokens = raw.split(/\s+/).filter((t) => !/^(dr|mr|mrs|ms|prof|miss)\.?$/i.test(t))
+    return tokens[0] || 'Admin'
   }, [user])
 
   const load = useCallback(async () => {

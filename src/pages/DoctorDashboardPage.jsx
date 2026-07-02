@@ -49,7 +49,8 @@ export function DoctorDashboardPage() {
   const firstName = useMemo(() => {
     const raw = (user?.full_name || '').trim()
     if (!raw) return 'Doctor'
-    return raw.split(/\s+/)[0]
+    const tokens = raw.split(/\s+/).filter((t) => !/^(dr|mr|mrs|ms|prof|miss)\.?$/i.test(t))
+    return tokens[0] || 'Doctor'
   }, [user])
 
   useEffect(() => {

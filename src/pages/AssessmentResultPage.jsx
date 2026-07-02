@@ -120,6 +120,7 @@ export function AssessmentResultPage({ mode = 'result' }) {
   const [shareError, setShareError] = useState('')
   const [shareNotice, setShareNotice] = useState('')
   const [dismissSavedBanner, setDismissSavedBanner] = useState(false)
+  const [showTechnical, setShowTechnical] = useState(false)
   const showSavedBanner = mode === 'result' && location.state?.freshResult === true && !dismissSavedBanner
 
   useEffect(() => {
@@ -178,12 +179,6 @@ export function AssessmentResultPage({ mode = 'result' }) {
   const videoConfidencePct = Math.round(
     Number(videoComp?.confidence ?? assessment?.confidence ?? videoComp?.asd_probability ?? 0) * 100,
   )
-  const videoLatencyMs = videoComp?.model?.latency_ms ?? videoComp?.inference_time_ms
-  const videoModelName =
-    videoComp?.model?.name ??
-    (videoComp?.runtime?.video_backbone
-      ? `${videoComp.runtime.video_backbone}+${videoComp.runtime.audio_backbone ?? 'yamnet'}`
-      : null)
   const isScreeningOnly = assessment?.type === 'screening'
 
   const behaviorInputs = assessment?.inputs?.behavior ?? {}
@@ -252,12 +247,6 @@ export function AssessmentResultPage({ mode = 'result' }) {
                 <p className="result-hero__meta muted">
                   Updated {new Date(assessment.created_at).toLocaleString()} · Type{' '}
                   <strong>{String(assessment.type || '').toUpperCase()}</strong>
-                  {out.pipeline?.version ? (
-                    <>
-                      {' '}
-                      · Pipeline <strong>{out.pipeline.version}</strong>
-                    </>
-                  ) : null}
                 </p>
               </div>
               <div className="result-hero__gauges">
@@ -311,32 +300,13 @@ export function AssessmentResultPage({ mode = 'result' }) {
                     <h2 className="result-section-title">
                       {videoComp.summary?.parent_facing?.title ?? 'Video analysis'}
                     </h2>
-                    <p className="muted small" style={{ marginTop: 0 }}>
-                      {videoModelName ?? 'video model'}
-                      {videoComp.model?.version ? <> · {videoComp.model.version}</> : null}
-                      {videoComp.model?.runtime ? <> · {videoComp.model.runtime}</> : null}
-                      {videoLatencyMs != null ? <> · {videoLatencyMs}ms</> : null}
-                    </p>
                     <div className="result-metrics-row">
                       <MetricChip label="Signal" value={`${videoSignalPct}%`} />
                       <MetricChip label="Confidence" value={`${videoConfidencePct}%`} />
+                      {videoComp.features?.duration_reported_sec != null ? (
+                        <MetricChip label="Clip length" value={`${videoComp.features.duration_reported_sec}s`} />
+                      ) : null}
                     </div>
-                    {videoComp.features && typeof videoComp.features === 'object' ? (
-                      <div className="result-metrics-row result-metrics-row--tight">
-                        {videoComp.features.duration_reported_sec != null ? (
-                          <MetricChip label="Clip length" value={`${videoComp.features.duration_reported_sec}s`} />
-                        ) : null}
-                        {videoComp.features.engagement_proxy != null ? (
-                          <MetricChip label="Engagement proxy" value={String(videoComp.features.engagement_proxy)} />
-                        ) : null}
-                        {videoComp.features.social_attention_proxy != null ? (
-                          <MetricChip
-                            label="Social attention proxy"
-                            value={String(videoComp.features.social_attention_proxy)}
-                          />
-                        ) : null}
-                      </div>
-                    ) : null}
                     {videoComp.summary?.parent_facing?.bullets?.length ? (
                       <ul className="result-bullet-list">
                         {videoComp.summary.parent_facing.bullets.map((b) => (
@@ -353,27 +323,13 @@ export function AssessmentResultPage({ mode = 'result' }) {
                 {imageComp ? (
                   <section className="ui-card result-panel anim-fade-up anim-delay-2">
                     <h2 className="result-section-title">{imageComp.summary?.parent_facing?.title ?? 'Image analysis'}</h2>
-                    <p className="muted small" style={{ marginTop: 0 }}>
-                      {imageComp.model?.name} · {imageComp.model?.version} · {imageComp.model?.runtime} ·{' '}
-                      {imageComp.model?.latency_ms}ms
-                    </p>
                     <div className="result-metrics-row">
+                      <MetricChip label="Signal" value={`${Math.round(Number(imageComp.score ?? 0) * 100)}%`} />
                       <MetricChip
-                        label="Signal (MVP)"
-                        value={`${Math.round(Number(imageComp.score ?? 0) * 100)}%`}
-                      />
-                      <MetricChip
-                        label="Local confidence"
+                        label="Confidence"
                         value={`${Math.round(Number(imageComp.confidence ?? 0) * 100)}%`}
                       />
                     </div>
-                    {imageComp.summary?.mean_luminance != null ? (
-                      <div className="result-metrics-row result-metrics-row--tight">
-                        <MetricChip label="Mean luminance" value={String(imageComp.summary.mean_luminance)} />
-                        <MetricChip label="Edge density" value={String(imageComp.summary.edge_density)} />
-                        <MetricChip label="Contrast" value={String(imageComp.summary.contrast)} />
-                      </div>
-                    ) : null}
                     {imageComp.summary?.parent_facing?.bullets?.length ? (
                       <ul className="result-bullet-list">
                         {imageComp.summary.parent_facing.bullets.map((b) => (
@@ -384,15 +340,6 @@ export function AssessmentResultPage({ mode = 'result' }) {
                     <p className="muted small result-disclaimer-inline">
                       {imageComp.summary?.parent_facing?.disclaimer ?? imageComp.summary?.note}
                     </p>
-                    {imageComp.preprocessing ? (
-                      <div className="result-prep-box">
-                        <strong>Preprocessing</strong>
-                        <span>
-                          {imageComp.preprocessing.resize_px}px RGB · JPEG q{imageComp.preprocessing.jpeg_quality} ·{' '}
-                          {imageComp.preprocessing.note}
-                        </span>
-                      </div>
-                    ) : null}
                   </section>
                 ) : null}
 
@@ -401,13 +348,9 @@ export function AssessmentResultPage({ mode = 'result' }) {
                     <h2 className="result-section-title">
                       {behaviorComp.summary?.parent_facing?.title ?? 'Behavior scoring'}
                     </h2>
-                    <p className="muted small" style={{ marginTop: 0 }}>
-                      {behaviorComp.model?.name} · {behaviorComp.model?.version} · {behaviorComp.model?.runtime} ·{' '}
-                      {behaviorComp.model?.latency_ms}ms
-                    </p>
                     <div className="result-metrics-row">
-                      <MetricChip label="Behavior signal" value={`${Math.round(Number(behaviorComp.score ?? 0) * 100)}%`} />
-                      <MetricChip label="Local confidence" value={`${Math.round(Number(behaviorComp.confidence ?? 0) * 100)}%`} />
+                      <MetricChip label="Signal" value={`${Math.round(Number(behaviorComp.score ?? 0) * 100)}%`} />
+                      <MetricChip label="Confidence" value={`${Math.round(Number(behaviorComp.confidence ?? 0) * 100)}%`} />
                     </div>
                     <div className="result-behavior-recap">
                       <h3 className="result-subheading">Your inputs</h3>
@@ -450,53 +393,73 @@ export function AssessmentResultPage({ mode = 'result' }) {
               </div>
             ) : null}
 
-            {out.performance?.total_latency_ms != null ? (
-              <section className="result-perf strip-muted anim-fade-up">
-                <span>
-                  <strong>End-to-end latency (MVP)</strong>: {out.performance.total_latency_ms}ms total
-                  {out.performance.combiner_latency_ms != null
-                    ? ` · combiner ${out.performance.combiner_latency_ms}ms`
-                    : ''}
-                </span>
-                {out.performance.note ? <span className="muted small">{out.performance.note}</span> : null}
-              </section>
-            ) : null}
-
-            {assessment.model_runs?.length ? (
-              <section className="ui-card result-panel result-lineage anim-fade-up">
-                <h2 className="result-section-title">Model run lineage</h2>
-                <p className="result-section-lead muted">
-                  Immutable log of which model stages executed for this assessment (versioning for audits and future model
-                  swaps).
-                </p>
-                <ol className="result-lineage__list">
-                  {assessment.model_runs.map((run, i) => (
-                    <li key={run.id} className="result-lineage__item">
-                      <span className="result-lineage__step">{i + 1}</span>
-                      <div>
-                        <span className="result-lineage__type">{run.model_type}</span>
-                        <span className="result-lineage__name">
-                          {run.model_name} <em>{run.model_version}</em>
-                        </span>
-                        <span className="muted small">
-                          {run.runtime} · {run.latency_ms}ms
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-                {out.combiner?.model ? (
-                  <p className="muted small" style={{ marginBottom: 0 }}>
-                    Active combiner: {out.combiner.model.name} ({out.combiner.model.version})
-                  </p>
-                ) : null}
-              </section>
-            ) : null}
-
             <section className="result-recommendation ui-card anim-fade-up">
               <h2 className="result-section-title">Recommendation</h2>
               <p className="result-recommendation__body">{out.recommendation ?? 'Consult a specialist for interpretation.'}</p>
             </section>
+
+            {assessment.model_runs?.length ? (
+              <section className="ui-card result-panel anim-fade-up">
+                <button
+                  type="button"
+                  className="ui-btn ui-btn--ghost ui-btn--sm"
+                  onClick={() => setShowTechnical((v) => !v)}
+                  aria-expanded={showTechnical}
+                >
+                  {showTechnical ? 'Hide technical details' : 'Show technical / model details'}
+                </button>
+                {showTechnical ? (
+                  <div style={{ marginTop: '1rem' }}>
+                    <p className="result-section-lead muted">
+                      For clinicians and auditors: which model stages ran, their versions, and processing details behind
+                      this result.
+                    </p>
+                    <ol className="result-lineage__list">
+                      {assessment.model_runs.map((run, i) => (
+                        <li key={run.id} className="result-lineage__item">
+                          <span className="result-lineage__step">{i + 1}</span>
+                          <div>
+                            <span className="result-lineage__type">{run.model_type}</span>
+                            <span className="result-lineage__name">
+                              {run.model_name} <em>{run.model_version}</em>
+                            </span>
+                            <span className="muted small">
+                              {run.runtime} · {run.latency_ms}ms
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                    {out.combiner?.model ? (
+                      <p className="muted small">
+                        Active combiner: {out.combiner.model.name} ({out.combiner.model.version})
+                      </p>
+                    ) : null}
+                    {imageComp?.preprocessing ? (
+                      <div className="result-prep-box">
+                        <strong>Image preprocessing</strong>
+                        <span>
+                          {imageComp.preprocessing.resize_px}px RGB · JPEG q{imageComp.preprocessing.jpeg_quality} ·{' '}
+                          {imageComp.preprocessing.note}
+                        </span>
+                      </div>
+                    ) : null}
+                    {out.pipeline?.version ? (
+                      <p className="muted small">Pipeline: {out.pipeline.version}</p>
+                    ) : null}
+                    {out.performance?.total_latency_ms != null ? (
+                      <p className="muted small">
+                        End-to-end latency: {out.performance.total_latency_ms}ms total
+                        {out.performance.combiner_latency_ms != null
+                          ? ` · combiner ${out.performance.combiner_latency_ms}ms`
+                          : ''}
+                        {out.performance.note ? ` · ${out.performance.note}` : ''}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+              </section>
+            ) : null}
 
             <section className="ui-card result-doctor-notes anim-fade-up">
               <h2 className="result-section-title">Clinical notes</h2>

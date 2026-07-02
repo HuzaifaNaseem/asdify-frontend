@@ -1,40 +1,46 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../state/AuthContext'
 
-function dashboardPath(role) {
-  if (role === 'admin') return '/admin/dashboard'
-  if (role === 'doctor') return '/doctor/dashboard'
-  return '/dashboard'
+const COLS = [
+  {
+    title: 'Platform',
+    links: [
+      { to: '/screening', label: 'Start Screening' },
+      { to: '/register', label: 'Create Account' },
+      { to: '/login', label: 'Sign In' },
+      { to: '/about', label: 'About Asdify' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { to: '/about', label: 'What is ASD?' },
+      { to: '/privacy-policy', label: 'Privacy Policy' },
+    ],
+  },
+]
+
+const DISCLAIMER =
+  'Results are a screening aid only — not a clinical diagnosis. Always consult a qualified professional.'
+
+/* Inside the authenticated app we don't want the marketing footer — just a
+   slim legal bar with the medical disclaimer and a couple of essential links. */
+function AppFooter() {
+  return (
+    <footer className="app-footer app-footer--slim">
+      <div className="app-footer__slim-inner">
+        <p className="app-footer__copy">© {new Date().getFullYear()} Asdify</p>
+        <p className="app-footer__note">{DISCLAIMER}</p>
+        <nav className="app-footer__slim-links" aria-label="Legal">
+          <Link to="/privacy-policy">Privacy</Link>
+          <Link to="/about">About</Link>
+        </nav>
+      </div>
+    </footer>
+  )
 }
 
-function buildCols(user) {
-  return [
-    {
-      title: 'Platform',
-      links: [
-        { to: '/screening', label: 'Start Screening' },
-        ...(user
-          ? [{ to: dashboardPath(user.role), label: 'Dashboard' }]
-          : [
-              { to: '/register', label: 'Create Account' },
-              { to: '/login', label: 'Sign In' },
-            ]),
-        { to: '/about', label: 'About Asdify' },
-      ],
-    },
-    {
-      title: 'Resources',
-      links: [
-        { to: '/about', label: 'What is ASD?' },
-        { to: '/privacy-policy', label: 'Privacy Policy' },
-      ],
-    },
-  ]
-}
-
-export function Footer() {
-  const { user } = useAuth()
-  const COLS = buildCols(user)
+function MarketingFooter() {
   return (
     <footer className="app-footer">
       <div className="app-footer__inner">
@@ -69,10 +75,13 @@ export function Footer() {
         <p className="app-footer__copy">
           © {new Date().getFullYear()} Asdify. All rights reserved.
         </p>
-        <p className="app-footer__note">
-          Results are a screening aid only — not a clinical diagnosis. Always consult a qualified professional.
-        </p>
+        <p className="app-footer__note">{DISCLAIMER}</p>
       </div>
     </footer>
   )
+}
+
+export function Footer() {
+  const { user } = useAuth()
+  return user ? <AppFooter /> : <MarketingFooter />
 }

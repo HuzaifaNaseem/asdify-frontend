@@ -689,6 +689,54 @@ img, svg { display: block; max-width: 100%; }
   text-align: right;
 }
 
+/* Slim footer — used inside the authenticated app. Blends with app chrome
+   (theme surface) instead of the dark marketing block. */
+.app-footer--slim {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.app-footer__slim-inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  flex-wrap: wrap;
+}
+.app-footer--slim .app-footer__copy {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.app-footer--slim .app-footer__note {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 12rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: left;
+  max-width: none;
+}
+.app-footer__slim-links {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: auto;
+}
+.app-footer__slim-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: color var(--dur-fast);
+}
+.app-footer__slim-links a:hover { color: var(--accent); }
+@media (max-width: 600px) {
+  .app-footer__slim-links { margin-left: 0; }
+}
+
 /* ─── Page container ─────────────────────────────────────────────────────── */
 .page-container {
   max-width: 1160px;

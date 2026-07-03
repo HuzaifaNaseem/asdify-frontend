@@ -57,12 +57,12 @@ export function RegisterPage() {
     }
   }
 
-  async function onGoogleCredential(credential) {
+  async function onGoogleToken(accessToken) {
     setError('')
     setPending(true)
     try {
       // Google sign-up always creates/uses a parent account.
-      await loginWithGoogle(credential)
+      await loginWithGoogle(accessToken)
     } catch (err) {
       setError(err.message ?? 'Could not sign up with Google.')
     } finally {
@@ -161,8 +161,7 @@ export function RegisterPage() {
             <>
               <div className="auth-divider">or</div>
               <GoogleSignInButton
-                text="signup_with"
-                onCredential={onGoogleCredential}
+                onToken={onGoogleToken}
                 onError={() => setError('Google sign-up failed. Please try again.')}
               />
             </>

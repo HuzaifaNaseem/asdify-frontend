@@ -77,8 +77,8 @@ export function AuthProvider({ children }) {
   )
 
   const loginWithGoogle = useCallback(
-    async (credential, redirectTo) => {
-      const me = await auth.googleLogin(credential)
+    async (accessToken, redirectTo) => {
+      const me = await auth.googleLogin(accessToken)
       setUser(me)
       redirectAfterAuth(me, redirectTo)
     },

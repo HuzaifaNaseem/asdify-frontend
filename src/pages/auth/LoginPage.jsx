@@ -33,11 +33,11 @@ export function LoginPage() {
     }
   }
 
-  async function onGoogleCredential(credential) {
+  async function onGoogleToken(accessToken) {
     setError('')
     setPending(true)
     try {
-      await loginWithGoogle(credential, from)
+      await loginWithGoogle(accessToken, from)
     } catch (err) {
       setError(err.message ?? 'Could not sign in with Google.')
     } finally {
@@ -108,8 +108,7 @@ export function LoginPage() {
 
           <div className="auth-divider">or</div>
           <GoogleSignInButton
-            text="signin_with"
-            onCredential={onGoogleCredential}
+            onToken={onGoogleToken}
             onError={() => setError('Google sign-in failed. Please try again.')}
           />
 

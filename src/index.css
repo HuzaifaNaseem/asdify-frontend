@@ -1043,11 +1043,37 @@ img, svg { display: block; max-width: 100%; }
   height: 1px;
   background: var(--border);
 }
-/* Google Identity Services renders its own button into this box */
-.google-signin {
+/* Custom, fully-controlled "Continue with Google" button */
+.google-btn {
   display: flex;
+  align-items: center;
   justify-content: center;
-  min-height: 44px;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-h);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur-fast), border-color var(--dur-fast), box-shadow var(--dur-fast);
+}
+.google-btn:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+}
+.google-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.google-btn__glyph {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex-shrink: 0;
 }
 
 /* Small right-aligned helper link under a field (e.g. "Forgot password?") */

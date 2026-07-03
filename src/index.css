@@ -878,6 +878,13 @@ textarea.ui-input {
   padding: 0.85rem 1rem;
   margin: 0;
 }
+/* Legend must mask the border behind it, otherwise the fieldset line runs
+   straight through the text. Background matches the surrounding card. */
+.ui-fieldset > legend {
+  padding: 0 0.4rem;
+  margin-left: -0.4rem;
+  background: var(--surface);
+}
 .ui-check, .ui-radio-line {
   display: flex;
   gap: 0.6rem;
@@ -3436,6 +3443,12 @@ textarea.ui-input {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Give the 5-point scale the full form width so its 5 cards never overflow
+   the narrow grid cell they'd otherwise share with the two selects above. */
+.assessment-social {
+  grid-column: 1 / -1;
 }
 
 .assessment-social__scale {

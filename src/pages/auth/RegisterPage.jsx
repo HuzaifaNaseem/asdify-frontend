@@ -162,7 +162,7 @@ export function RegisterPage() {
               <div className="auth-divider">or</div>
               <GoogleSignInButton
                 onToken={onGoogleToken}
-                onError={() => setError('Google sign-up failed. Please try again.')}
+                onError={(err) => setError(err?.message || 'Google sign-up failed. Please try again.')}
               />
             </>
           ) : null}

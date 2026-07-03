@@ -144,15 +144,15 @@ export function ScreeningPage() {
   return (
     <>
       <DocumentTitle title="Online Screening — Asdify" />
-      <MetaDescription content="Complete a weighted ASD screening questionnaire (20 items, four response levels) with instant scoring, risk band, and PDF report." />
+      <MetaDescription content="Complete the AQ-10 (Child) autism screening questionnaire, scored by a trained model, with an instant risk band and PDF report." />
 
       <section className="lp-section">
         <p className="section-eyebrow">Module 9 · Questionnaire engine</p>
         <h1 className="section-title">ASD screening questionnaire {childLabel}</h1>
         <p className="section-lead">
-          This tool uses weighted domain scoring (social communication, language, repetitive
-          behaviors, sensory processing, emotional regulation). It supports early conversations
-          but does not replace clinical diagnosis.
+          Based on the validated AQ-10 (Child) screening instrument and scored by a trained
+          machine-learning model. It supports early conversations but does not replace clinical
+          diagnosis.
         </p>
 
         {error ? (
@@ -290,8 +290,7 @@ export function ScreeningPage() {
                 />
               </div>
               <p className="screening-result-banner__sub">
-                Weighted screening score (0–100) · {result.critical_score ?? 0} of {questions.length}{' '}
-                ASD-indicator items flagged.
+                AQ-10 screening (0–100) · {result.critical_score ?? 0} of 10 AQ-10 indicators flagged.
               </p>
             </div>
 

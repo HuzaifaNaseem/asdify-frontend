@@ -5669,3 +5669,57 @@ a:focus-visible {
     radial-gradient(ellipse 55% 70% at 25% 20%, rgba(45,212,191,.16) 0%, transparent 65%),
     radial-gradient(ellipse 55% 70% at 80% 85%, rgba(14,165,233,.14) 0%, transparent 65%);
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE POLISH PASS — small-screen refinements on top of the existing
+   responsive foundations (auto-fit grids, clamp() headings, wrapping rows).
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Long unbreakable strings (emails, IDs, filenames, share links) must never
+   force the page wider than the screen. */
+.admin-table__mono,
+.doctor-patient-card__email,
+.screening-tech-line,
+.assessment-filename,
+.video-assessment-filename,
+.profile-row__value,
+.auth-muted {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+img, video, canvas, svg { max-width: 100%; height: auto; }
+
+@media (max-width: 640px) {
+  .page-container { padding-left: 1rem; padding-right: 1rem; }
+  .lp-section { padding-left: 1rem; padding-right: 1rem; }
+  .ui-card { padding: 1.15rem; }
+  .auth-card { padding: 1.5rem 1.2rem; }
+  .patient-details-card { padding: 1.25rem 1.1rem; }
+  /* Any lingering two-up filter/form grids collapse to one column. */
+  .history-filters__grid,
+  .doctor-dir__filters,
+  .admin-assign-form { grid-template-columns: 1fr; }
+  .admin-assign-form > * { width: 100%; }
+  /* Give scrollable admin tables a subtle affordance and comfortable min width. */
+  .admin-table { min-width: 560px; }
+}
+
+@media (max-width: 480px) {
+  .parent-dashboard__stats { grid-template-columns: 1fr; }
+  /* Full-width, stacked action buttons — easier tap targets on phones. */
+  .screening-actions,
+  .patient-details-card__actions,
+  .assessment-panel__actions,
+  .profile-form__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .screening-actions > .ui-btn,
+  .screening-actions > button,
+  .patient-details-card__actions > .ui-btn,
+  .patient-details-card__actions > button,
+  .assessment-panel__actions > .ui-btn,
+  .profile-form__actions > .ui-btn { width: 100%; }
+  /* Result banner: stack the score under the band label so it never crowds. */
+  .screening-result-banner__top { flex-direction: column; gap: 0.35rem; }
+}

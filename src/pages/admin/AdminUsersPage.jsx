@@ -51,6 +51,21 @@ export function AdminUsersPage() {
   const [assignParent, setAssignParent] = useState('')
   const [assignBusy, setAssignBusy] = useState(false)
   const [assignMsg, setAssignMsg] = useState('')
+  const [assignDoctorOpts, setAssignDoctorOpts] = useState([])
+  const [assignParentOpts, setAssignParentOpts] = useState([])
+
+  const loadAssignOptions = useCallback(async () => {
+    try {
+      const [docs, pars] = await Promise.all([
+        fetchAdminUsers({ limit: 200, role: 'doctor', status: 'active' }),
+        fetchAdminUsers({ limit: 200, role: 'parent' }),
+      ])
+      setAssignDoctorOpts(docs.users ?? [])
+      setAssignParentOpts(pars.users ?? [])
+    } catch {
+      // Non-fatal — the dropdowns just stay empty.
+    }
+  }, [])
 
   const load = useCallback(async () => {
     const offset = page * PAGE_SIZE
@@ -88,6 +103,10 @@ export function AdminUsersPage() {
     }
   }, [load])
 
+  useEffect(() => {
+    void loadAssignOptions()
+  }, [loadAssignOptions])
+
   function updateDraft(id, field, value) {
     setDrafts((prev) => ({
       ...prev,
@@ -110,6 +129,7 @@ export function AdminUsersPage() {
       if (d.status !== u.status) body.status = d.status
       await patchAdminUser(u.id, body)
       await load()
+      await loadAssignOptions()
       setBanner('User updated.')
     } catch (e) {
       setError(e.message ?? 'Update failed.')
@@ -141,16 +161,14 @@ export function AdminUsersPage() {
   async function submitAssignment(e) {
     e.preventDefault()
     setAssignMsg('')
-    const dId = Number(assignDoctor, 10)
-    const pId = Number(assignParent, 10)
-    if (!Number.isFinite(dId) || !Number.isFinite(pId)) {
-      setAssignMsg('Enter numeric user IDs for doctor and parent.')
+    if (!assignDoctor || !assignParent) {
+      setAssignMsg('Select both a doctor and a parent.')
       return
     }
     setAssignBusy(true)
     try {
-      await createCareAssignment(dId, pId)
-      setAssignMsg('Assignment saved (or already existed).')
+      await createCareAssignment(Number(assignDoctor), Number(assignParent))
+      setAssignMsg('Assignment saved — the parent now appears in that doctor’s patient list.')
       setAssignDoctor('')
       setAssignParent('')
     } catch (e) {
@@ -356,26 +374,41 @@ export function AdminUsersPage() {
           <section className="admin-panel">
             <div className="admin-panel__head">
               <h2 className="admin-panel__title">Care team assignment</h2>
-              <p className="muted small">Link an active doctor to a parent account (IDs from this table or dashboard).</p>
+              <p className="muted small">
+                Link an active doctor to a parent account. The parent will then appear in that
+                doctor’s patient list.
+              </p>
             </div>
             <form className="admin-assign-form" onSubmit={(e) => void submitAssignment(e)}>
               <label className="admin-field">
-                <span className="admin-field__label">Doctor user ID</span>
-                <input
+                <span className="admin-field__label">Doctor</span>
+                <select
                   className="admin-input"
-                  inputMode="numeric"
                   value={assignDoctor}
                   onChange={(e) => setAssignDoctor(e.target.value)}
-                />
+                >
+                  <option value="">— Select a doctor —</option>
+                  {assignDoctorOpts.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.full_name} — {d.email}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label className="admin-field">
-                <span className="admin-field__label">Parent user ID</span>
-                <input
+                <span className="admin-field__label">Parent</span>
+                <select
                   className="admin-input"
-                  inputMode="numeric"
                   value={assignParent}
                   onChange={(e) => setAssignParent(e.target.value)}
-                />
+                >
+                  <option value="">— Select a parent —</option>
+                  {assignParentOpts.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.full_name} — {p.email}
+                    </option>
+                  ))}
+                </select>
               </label>
               <button type="submit" className="ui-btn ui-btn--primary ui-btn--sm" disabled={assignBusy}>
                 {assignBusy ? 'Saving…' : 'Create assignment'}

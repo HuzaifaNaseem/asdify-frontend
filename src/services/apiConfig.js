@@ -4,6 +4,10 @@ import { getApiBaseURL, setApiBaseURL } from './api'
 const STORAGE_KEY = 'asdify_api_origin'
 const STORAGE_UPDATED_KEY = 'asdify_api_origin_updated_at'
 
+// Production backend. Used when VITE_API_URL isn't baked into the build, so a
+// fresh visitor (no localStorage cache) can still reach the API. Env still wins.
+const PROD_API_ORIGIN = 'https://asdify-api.duckdns.org'
+
 let configSource = 'unset'
 let initPromise = null
 
@@ -104,6 +108,17 @@ async function resolveApiOrigin() {
     return fromEnv
   }
 
+  // Production: env override didn't apply, so use a cached origin if present,
+  // otherwise the known production backend. (No localhost/ngrok discovery — those
+  // are dev-only and would just add a multi-second delay for real users.)
+  if (!import.meta.env.DEV) {
+    const cachedProd = readCachedOrigin()
+    const origin = cachedProd || PROD_API_ORIGIN
+    setApiBaseURL(origin)
+    configSource = cachedProd ? 'cache' : 'default'
+    return origin
+  }
+
   const localLoopback = await resolveLoopbackOrigin()
   if (localLoopback) {
     setApiBaseURL(localLoopback)
@@ -129,21 +144,9 @@ async function resolveApiOrigin() {
     }
   }
 
-  if (import.meta.env.DEV) {
-    setApiBaseURL('')
-    configSource = 'proxy'
-    return ''
-  }
-
-  const cached = readCachedOrigin()
-  if (cached) {
-    setApiBaseURL(cached)
-    configSource = 'cache'
-    return cached
-  }
-
+  // Dev fallback: same-origin (Vite proxy).
   setApiBaseURL('')
-  configSource = 'none'
+  configSource = 'proxy'
   return ''
 }
 

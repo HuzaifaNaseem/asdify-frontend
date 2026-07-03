@@ -30,7 +30,9 @@ export function getApiBaseURL() {
   if (import.meta.env.DEV) {
     return ''
   }
-  return ''
+  // Production without a baked-in VITE_API_URL: use the known backend so a fresh
+  // client still reaches the API before apiConfig discovery resolves.
+  return 'https://asdify-api.duckdns.org'
 }
 
 export const api = axios.create({

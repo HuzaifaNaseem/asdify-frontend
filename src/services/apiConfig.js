@@ -108,15 +108,20 @@ async function resolveApiOrigin() {
     return fromEnv
   }
 
-  // Production: env override didn't apply, so use a cached origin if present,
-  // otherwise the known production backend. (No localhost/ngrok discovery — those
-  // are dev-only and would just add a multi-second delay for real users.)
+  // Production: always use the known backend (env override above still wins).
+  // We deliberately do NOT trust a cached origin here — an earlier build could
+  // have cached a dead ngrok/discovery URL in localStorage, which would then
+  // keep the app broken. Clear any such stale cache and use the real backend.
   if (!import.meta.env.DEV) {
-    const cachedProd = readCachedOrigin()
-    const origin = cachedProd || PROD_API_ORIGIN
-    setApiBaseURL(origin)
-    configSource = cachedProd ? 'cache' : 'default'
-    return origin
+    try {
+      window.localStorage.removeItem(STORAGE_KEY)
+      window.localStorage.removeItem(STORAGE_UPDATED_KEY)
+    } catch {
+      // ignore
+    }
+    setApiBaseURL(PROD_API_ORIGIN)
+    configSource = 'default'
+    return PROD_API_ORIGIN
   }
 
   const localLoopback = await resolveLoopbackOrigin()

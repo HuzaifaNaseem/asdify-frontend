@@ -5468,7 +5468,10 @@ a {
   color: var(--accent);
   text-decoration: none;
 }
-a:hover { text-decoration: underline; }
+/* Underline on hover only for inline prose links (inside paragraphs/lists),
+   never for card- or block-style links that wrap headings and text. */
+p a:hover,
+li a:hover { text-decoration: underline; }
 a:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;

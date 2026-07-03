@@ -1965,6 +1965,67 @@ textarea.ui-input {
   color: var(--text);
 }
 
+/* Screening result banner — a considered risk card, not an error alert.
+   --band-color is set inline from the API's risk band colour. */
+.screening-result-banner {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--band-color, var(--accent));
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--band-color, var(--accent)) 8%, var(--surface));
+  padding: 1.1rem 1.25rem;
+}
+.screening-result-banner__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.screening-result-banner__eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+.screening-result-banner__band {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--band-color, var(--text-h));
+}
+.screening-result-banner__score {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  font-weight: 700;
+  color: var(--band-color, var(--text-h));
+}
+.screening-result-banner__score-num { font-size: 1.7rem; line-height: 1; }
+.screening-result-banner__score-max { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
+.screening-result-banner__bar {
+  margin: 0.85rem 0 0.6rem;
+  height: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--band-color, var(--accent)) 18%, transparent);
+  overflow: hidden;
+}
+.screening-result-banner__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--band-color, var(--accent));
+  transition: width var(--dur-base) var(--ease);
+}
+.screening-result-banner__sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.screening-tech-line { margin: 0.35rem 0 0; word-break: break-word; }
+
 .screening-badges {
   display: flex;
   gap: 0.6rem;

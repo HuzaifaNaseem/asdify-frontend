@@ -267,33 +267,37 @@ export function ScreeningPage() {
         {/* ── Phase 3: Results ───────────────────────────────────────── */}
         {phase === 'result' && result ? (
           <div className="ui-card screening-result">
-            <Alert
-              title={`${result.risk_band?.band ?? result.risk_level} · ${resultSummary.finalPct}/100`}
-              variant={resultSummary?.tone ?? 'info'}
+            <div
+              className="screening-result-banner"
+              style={{ '--band-color': resultSummary.bandColor || 'var(--accent)' }}
             >
-              Weighted screening score (normalized 0–100). ASD-indicator selections:{' '}
-              {result.critical_score ?? 0} of {questions.length} items.
-            </Alert>
-
-            {resultSummary?.bandColor ? (
-              <div
-                className="screening-band-chip"
-                style={{ borderColor: resultSummary.bandColor, color: resultSummary.bandColor }}
-              >
-                Band color (reference): {resultSummary.bandColor}
+              <div className="screening-result-banner__top">
+                <div>
+                  <span className="screening-result-banner__eyebrow">Screening result</span>
+                  <h2 className="screening-result-banner__band">
+                    {result.risk_band?.band ?? result.risk_level}
+                  </h2>
+                </div>
+                <div className="screening-result-banner__score">
+                  <span className="screening-result-banner__score-num">{resultSummary.finalPct}</span>
+                  <span className="screening-result-banner__score-max">/100</span>
+                </div>
               </div>
-            ) : null}
+              <div className="screening-result-banner__bar" aria-hidden="true">
+                <span
+                  className="screening-result-banner__bar-fill"
+                  style={{ width: `${resultSummary.finalPct}%` }}
+                />
+              </div>
+              <p className="screening-result-banner__sub">
+                Weighted screening score (0–100) · {result.critical_score ?? 0} of {questions.length}{' '}
+                ASD-indicator items flagged.
+              </p>
+            </div>
 
             <p className="screening-recommendation">{result.recommendation}</p>
 
-            <p className="muted small">
-              Raw weighted sum: {result.weighted_sum} / {result.max_possible_weighted} · Risk
-              level: {result.risk_level}
-            </p>
-
             <div className="screening-badges">
-              <span className="screening-badge">Model: {result.model_version}</span>
-              <span className="screening-badge">Questionnaire: {result.questionnaire_name}</span>
               {result.saved_to_account ? (
                 <span className="screening-badge is-saved">Saved to your account</span>
               ) : user?.role === 'parent' ? (
@@ -303,15 +307,9 @@ export function ScreeningPage() {
               )}
             </div>
 
-            {result.risk_items?.length ? (
-              <p className="screening-risk-items">
-                Items with ASD-flagged response: {result.risk_items.join(', ')}
-              </p>
-            ) : null}
-
-            {result.domain_scores_weighted ? (
-              <details className="screening-domain-details">
-                <summary>Domain scores (weighted contribution)</summary>
+            <details className="screening-domain-details">
+              <summary>Score breakdown &amp; technical details</summary>
+              {result.domain_scores_weighted ? (
                 <ul className="screening-domain-list">
                   {Object.entries(result.domain_scores_weighted).map(([k, v]) => (
                     <li key={k}>
@@ -319,8 +317,17 @@ export function ScreeningPage() {
                     </li>
                   ))}
                 </ul>
-              </details>
-            ) : null}
+              ) : null}
+              <p className="muted small screening-tech-line">
+                Weighted sum {result.weighted_sum} / {result.max_possible_weighted} · Model{' '}
+                {result.model_version}
+              </p>
+              {result.risk_items?.length ? (
+                <p className="muted small screening-tech-line">
+                  Flagged items: {result.risk_items.join(', ')}
+                </p>
+              ) : null}
+            </details>
 
             <div className="screening-actions">
               <Button

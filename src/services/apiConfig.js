@@ -4,10 +4,6 @@ import { getApiBaseURL, setApiBaseURL } from './api'
 const STORAGE_KEY = 'asdify_api_origin'
 const STORAGE_UPDATED_KEY = 'asdify_api_origin_updated_at'
 
-// Production backend. Used when VITE_API_URL isn't baked into the build, so a
-// fresh visitor (no localStorage cache) can still reach the API. Env still wins.
-const PROD_API_ORIGIN = 'https://asdify-api.duckdns.org'
-
 let configSource = 'unset'
 let initPromise = null
 
@@ -101,17 +97,10 @@ async function resolveLoopbackOrigin() {
 }
 
 async function resolveApiOrigin() {
-  const fromEnv = envApiOrigin()
-  if (fromEnv) {
-    setApiBaseURL(fromEnv)
-    configSource = 'env'
-    return fromEnv
-  }
-
-  // Production: always use the known backend (env override above still wins).
-  // We deliberately do NOT trust a cached origin here — an earlier build could
-  // have cached a dead ngrok/discovery URL in localStorage, which would then
-  // keep the app broken. Clear any such stale cache and use the real backend.
+  // Production: always same-origin. vercel.json rewrites /api/* to the backend,
+  // so this needs no CORS and uses a valid cert. We ignore VITE_API_URL and any
+  // cached discovery origin here — a stale/misconfigured value must not break
+  // the live site — and clear old cache left by earlier builds.
   if (!import.meta.env.DEV) {
     try {
       window.localStorage.removeItem(STORAGE_KEY)
@@ -119,9 +108,16 @@ async function resolveApiOrigin() {
     } catch {
       // ignore
     }
-    setApiBaseURL(PROD_API_ORIGIN)
-    configSource = 'default'
-    return PROD_API_ORIGIN
+    setApiBaseURL('')
+    configSource = 'proxy'
+    return ''
+  }
+
+  const fromEnv = envApiOrigin()
+  if (fromEnv) {
+    setApiBaseURL(fromEnv)
+    configSource = 'env'
+    return fromEnv
   }
 
   const localLoopback = await resolveLoopbackOrigin()

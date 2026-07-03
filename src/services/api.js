@@ -23,16 +23,17 @@ export function getApiBaseURL() {
   if (resolvedApiOrigin !== undefined) {
     return resolvedApiOrigin
   }
+  // Production always uses same-origin: vercel.json rewrites /api/* to the
+  // backend, so no CORS and a valid cert. (Env is only honored in dev — a
+  // misconfigured prod VITE_API_URL must not break the live site.)
+  if (!import.meta.env.DEV) {
+    return ''
+  }
   const raw = import.meta.env.VITE_API_URL
   if (typeof raw === 'string' && raw.trim() !== '') {
     return raw.replace(/\/$/, '')
   }
-  if (import.meta.env.DEV) {
-    return ''
-  }
-  // Production without a baked-in VITE_API_URL: use the known backend so a fresh
-  // client still reaches the API before apiConfig discovery resolves.
-  return 'https://asdify-api.duckdns.org'
+  return ''
 }
 
 export const api = axios.create({

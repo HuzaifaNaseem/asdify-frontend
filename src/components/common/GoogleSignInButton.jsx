@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 // Client IDs are public identifiers, so a baked-in default keeps production
 // working without a Vercel env var; override with VITE_GOOGLE_CLIENT_ID if needed.
@@ -58,7 +58,6 @@ function GoogleGlyph() {
  */
 export function GoogleSignInButton({ onToken, onError, label = 'Continue with Google' }) {
   const clientRef = useRef(null)
-  const [ready, setReady] = useState(false)
   const onTokenRef = useRef(onToken)
   const onErrorRef = useRef(onError)
   useEffect(() => {
@@ -94,9 +93,10 @@ export function GoogleSignInButton({ onToken, onError, label = 'Continue with Go
             onErrorRef.current?.(new Error(map[err?.type] || err?.message || 'Google sign-in failed.'))
           },
         })
-        setReady(true)
+        console.info('[Google] token client initialized')
       })
       .catch((err) => {
+        console.error('[Google] failed to load GSI script:', err)
         if (!cancelled) onErrorRef.current?.(err)
       })
     return () => {
@@ -105,21 +105,26 @@ export function GoogleSignInButton({ onToken, onError, label = 'Continue with Go
   }, [])
 
   function handleClick() {
+    console.info('[Google] button clicked; client ready =', Boolean(clientRef.current))
     if (!clientRef.current) {
-      onErrorRef.current?.(new Error('Google sign-in is still loading. Please try again.'))
+      onErrorRef.current?.(
+        new Error(
+          'Google is still loading (or was blocked by an extension/ad-blocker). Wait a moment or disable blockers for this site, then click again.',
+        ),
+      )
       return
     }
-    // Called inside a user gesture, so the popup is not blocked.
-    clientRef.current.requestAccessToken()
+    // Called synchronously inside the user gesture so the popup is not blocked.
+    try {
+      clientRef.current.requestAccessToken()
+    } catch (err) {
+      console.error('[Google] requestAccessToken threw:', err)
+      onErrorRef.current?.(err instanceof Error ? err : new Error('Could not open Google sign-in.'))
+    }
   }
 
   return (
-    <button
-      type="button"
-      className="google-btn"
-      onClick={handleClick}
-      disabled={!ready}
-    >
+    <button type="button" className="google-btn" onClick={handleClick}>
       <GoogleGlyph />
       <span>{label}</span>
     </button>

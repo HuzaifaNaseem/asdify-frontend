@@ -1,16 +1,15 @@
 /* ─── Design tokens ─────────────────────────────────────────────────────── */
 :root {
-  /* Core palette – calm medical blue (tokens keep the --c-teal-* names for
-     backwards-compatibility, but now hold blue values so the whole app is blue) */
-  --c-teal-50:  #eff6ff;
-  --c-teal-100: #dbeafe;
-  --c-teal-200: #bfdbfe;
-  --c-teal-400: #60a5fa;
-  --c-teal-500: #3b82f6;
-  --c-teal-600: #2563eb;
-  --c-teal-700: #1d4ed8;
-  --c-teal-800: #1e40af;
-  --c-teal-900: #1e3a8a;
+  /* Core palette – calm medical teal */
+  --c-teal-50:  #f0fdfa;
+  --c-teal-100: #ccfbf1;
+  --c-teal-200: #99f6e4;
+  --c-teal-400: #2dd4bf;
+  --c-teal-500: #14b8a6;
+  --c-teal-600: #0d9488;
+  --c-teal-700: #0f766e;
+  --c-teal-800: #115e59;
+  --c-teal-900: #134e4a;
 
   --c-sky-50:   #f0f9ff;
   --c-sky-100:  #e0f2fe;
@@ -36,16 +35,16 @@
   --surface:      #ffffff;
   --surface-2:    var(--c-slate-50);
   --border:       var(--c-slate-200);
-  --border-soft:  rgba(37, 99, 235, 0.14);
+  --border-soft:  rgba(14, 148, 136, 0.14);
 
   --accent:       var(--c-teal-600);
   --accent-light: var(--c-teal-500);
   --accent-hover: var(--c-teal-700);
-  --accent-soft:  rgba(37, 99, 235, 0.1);
-  --accent-glow:  rgba(37, 99, 235, 0.22);
+  --accent-soft:  rgba(13, 148, 136, 0.1);
+  --accent-glow:  rgba(13, 148, 136, 0.22);
 
-  --grad-hero:    linear-gradient(145deg, #eaf1ff 0%, #ddebfb 40%, #eef4ff 100%);
-  --grad-card:    linear-gradient(145deg, #ffffff 0%, #eff6ff 100%);
+  --grad-hero:    linear-gradient(145deg, #e8f8f7 0%, #ddf4fb 40%, #eef6ff 100%);
+  --grad-card:    linear-gradient(145deg, #ffffff 0%, #f0fdfa 100%);
   --grad-cta:     linear-gradient(135deg, var(--c-teal-700) 0%, var(--c-sky-600) 100%);
 
   --success:      #059669;
@@ -66,7 +65,7 @@
   --shadow:     0 4px 20px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.05);
   --shadow-md:  0 8px 32px rgba(15, 23, 42, 0.1), 0 4px 12px rgba(15, 23, 42, 0.06);
   --shadow-lg:  0 20px 60px rgba(15, 23, 42, 0.12), 0 8px 24px rgba(15, 23, 42, 0.06);
-  --shadow-teal: 0 8px 24px rgba(37, 99, 235, 0.28);
+  --shadow-teal: 0 8px 24px rgba(13, 148, 136, 0.28);
 
   /* Typography */
   --sans:   'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
@@ -105,17 +104,17 @@
   --surface:    #1e2c38;
   --surface-2:  #263847;
   --border:     #324457;
-  --border-soft: rgba(96, 165, 250, 0.16);
+  --border-soft: rgba(45, 212, 191, 0.16);
 
   --accent:       var(--c-teal-400);
-  --accent-light: #93c5fd;
-  --accent-hover: #60a5fa;
-  --accent-soft:  rgba(96, 165, 250, 0.14);
-  --accent-glow:  rgba(96, 165, 250, 0.22);
+  --accent-light: #5eead4;
+  --accent-hover: #2dd4bf;
+  --accent-soft:  rgba(45, 212, 191, 0.14);
+  --accent-glow:  rgba(45, 212, 191, 0.22);
 
   --grad-hero: linear-gradient(145deg, #1a2c33 0%, #172d2b 40%, #1a2733 100%);
   --grad-card: linear-gradient(145deg, #1e2c38 0%, #1c332f 100%);
-  --grad-cta:  linear-gradient(135deg, #3b82f6 0%, #0284c7 100%);
+  --grad-cta:  linear-gradient(135deg, #14b8a6 0%, #0284c7 100%);
 
   --success-bg: #164e3f;
   --error-bg:   #4c1d1d;
@@ -124,7 +123,7 @@
   --shadow:     0 4px 20px rgba(0, 0, 0, 0.28);
   --shadow-md:  0 8px 32px rgba(0, 0, 0, 0.32);
   --shadow-lg:  0 20px 60px rgba(0, 0, 0, 0.38);
-  --shadow-teal: 0 8px 24px rgba(96, 165, 250, 0.22);
+  --shadow-teal: 0 8px 24px rgba(45, 212, 191, 0.22);
 }
 
 /* ─── Reset ─────────────────────────────────────────────────────────────── */
@@ -278,7 +277,7 @@ img, svg { display: block; max-width: 100%; }
 :root[data-theme="dark"] .nav-link--cta:hover,
 :root[data-theme="dark"] .nav-link--cta:focus-visible {
   background: linear-gradient(135deg, var(--c-teal-500) 0%, var(--c-sky-500) 100%);
-  box-shadow: 0 10px 28px rgba(96, 165, 250, 0.25);
+  box-shadow: 0 10px 28px rgba(45, 212, 191, 0.25);
 }
 .nav-btn {
   font-size: 0.9rem !important;
@@ -783,7 +782,7 @@ img, svg { display: block; max-width: 100%; }
 }
 .ui-btn--primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(37, 99, 235,.4);
+  box-shadow: 0 12px 32px rgba(13,148,136,.4);
 }
 
 .ui-btn--secondary {
@@ -1137,8 +1136,8 @@ textarea.ui-input {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background: rgba(37, 99, 235,.1);
-  border: 1px solid rgba(37, 99, 235,.25);
+  background: rgba(13,148,136,.1);
+  border: 1px solid rgba(13,148,136,.25);
   color: var(--c-teal-700);
   font-size: 0.8rem;
   font-weight: 600;
@@ -1160,7 +1159,7 @@ textarea.ui-input {
   border: 1.5px solid var(--accent);
   animation: pulse-ring 1.6s ease-out infinite;
 }
-:root[data-theme="dark"] .pill-badge { background: rgba(96, 165, 250,.1); border-color: rgba(96, 165, 250,.2); color: var(--c-teal-400); }
+:root[data-theme="dark"] .pill-badge { background: rgba(45,212,191,.1); border-color: rgba(45,212,191,.2); color: var(--c-teal-400); }
 
 /* ─── Landing — hero ─────────────────────────────────────────────────────── */
 .landing { padding: 0; }
@@ -1177,7 +1176,7 @@ textarea.ui-input {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 70% 50%, rgba(37, 99, 235,.12) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 70% 50%, rgba(13,148,136,.12) 0%, transparent 70%),
     radial-gradient(ellipse 50% 60% at 10% 80%, rgba(14,165,233,.1) 0%, transparent 70%);
   pointer-events: none;
 }
@@ -1602,7 +1601,7 @@ textarea.ui-input {
 .cta-section::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(37, 99, 235,.25) 0%, transparent 70%);
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(13,148,136,.25) 0%, transparent 70%);
   pointer-events: none;
 }
 .cta-inner {
@@ -1666,7 +1665,7 @@ textarea.ui-input {
 .about-hero::before {
   content: '';
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse 50% 60% at 80% 40%, rgba(37, 99, 235,.15) 0%, transparent 65%);
+  background: radial-gradient(ellipse 50% 60% at 80% 40%, rgba(13,148,136,.15) 0%, transparent 65%);
   pointer-events: none;
 }
 .about-hero__inner {
@@ -1746,7 +1745,7 @@ textarea.ui-input {
   padding: 1.5rem 1.75rem;
 }
 :root[data-theme="dark"] .about-disclaimer {
-  background: color-mix(in srgb, var(--surface) 75%, rgba(37, 99, 235,.15));
+  background: color-mix(in srgb, var(--surface) 75%, rgba(13,148,136,.15));
 }
 .about-disclaimer__title {
   font-size: 0.8rem;
@@ -1906,7 +1905,7 @@ textarea.ui-input {
   padding: 0.85rem 1rem;
   border-radius: 12px;
   border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--accent, #2563eb) 6%, var(--surface));
+  background: color-mix(in srgb, var(--accent, #0d9488) 6%, var(--surface));
   font-size: 0.88rem;
   line-height: 1.45;
   color: var(--text-h);
@@ -2190,8 +2189,8 @@ textarea.ui-input {
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  background: var(--teal-100, #dbeafe);
-  color: var(--teal-700, #1d4ed8);
+  background: var(--teal-100, #ccfbf1);
+  color: var(--teal-700, #0f766e);
   padding: 0.15rem 0.7rem;
   border-radius: 99px;
   margin-bottom: 0.5rem;
@@ -2229,15 +2228,15 @@ textarea.ui-input {
   gap: 0.5rem;
   flex-wrap: wrap;
   padding: 0.6rem 0.9rem;
-  background: var(--teal-50, #eff6ff);
-  border: 1px solid var(--teal-200, #bfdbfe);
+  background: var(--teal-50, #f0fdfa);
+  border: 1px solid var(--teal-200, #99f6e4);
   border-radius: 8px;
   font-size: 0.9rem;
 }
 
 .patient-summary-strip__label {
   font-weight: 600;
-  color: var(--teal-700, #1d4ed8);
+  color: var(--teal-700, #0f766e);
 }
 
 .patient-summary-strip__edit {
@@ -2246,7 +2245,7 @@ textarea.ui-input {
   border: none;
   cursor: pointer;
   font-size: 0.82rem;
-  color: var(--teal-600, #2563eb);
+  color: var(--teal-600, #0d9488);
   text-decoration: underline;
   padding: 0;
 }
@@ -2408,13 +2407,13 @@ textarea.ui-input {
 }
 
 .history-chip:hover {
-  border-color: var(--teal-400, #60a5fa);
+  border-color: var(--teal-400, #2dd4bf);
 }
 
 .history-chip--active {
-  background: color-mix(in srgb, var(--accent, #2563eb) 14%, transparent);
-  border-color: var(--accent, #2563eb);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #2563eb) 35%, transparent);
+  background: color-mix(in srgb, var(--accent, #0d9488) 14%, transparent);
+  border-color: var(--accent, #0d9488);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #0d9488) 35%, transparent);
 }
 
 .history-filters__actions {
@@ -2595,8 +2594,8 @@ textarea.ui-input {
   margin: 0 0 1rem;
   padding: 0.9rem 1rem;
   border-radius: 12px;
-  border-left: 3px solid var(--accent, #2563eb);
-  background: color-mix(in srgb, var(--accent, #2563eb) 8%, var(--surface));
+  border-left: 3px solid var(--accent, #0d9488);
+  background: color-mix(in srgb, var(--accent, #0d9488) 8%, var(--surface));
   font-size: 0.92rem;
   line-height: 1.45;
 }
@@ -5422,7 +5421,7 @@ textarea.ui-input {
 }
 .cta-section::before {
   background:
-    radial-gradient(ellipse 55% 70% at 25% 20%, rgba(37, 99, 235,.3) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 70% at 25% 20%, rgba(13,148,136,.3) 0%, transparent 65%),
     radial-gradient(ellipse 55% 70% at 80% 85%, rgba(14,165,233,.22) 0%, transparent 65%);
 }
 .cta-title { font-weight: 600; }
@@ -5667,7 +5666,7 @@ a:focus-visible {
 }
 :root[data-theme="dark"] .cta-section::before {
   background:
-    radial-gradient(ellipse 55% 70% at 25% 20%, rgba(96, 165, 250,.16) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 70% at 25% 20%, rgba(45,212,191,.16) 0%, transparent 65%),
     radial-gradient(ellipse 55% 70% at 80% 85%, rgba(14,165,233,.14) 0%, transparent 65%);
 }
 

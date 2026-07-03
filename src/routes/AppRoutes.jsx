@@ -5,6 +5,7 @@ import { ProtectedRoute } from './ProtectedRoute'
 import { GuestOnlyRoute } from './GuestOnlyRoute'
 import { LoginPage } from '../pages/auth/LoginPage'
 import { RegisterPage } from '../pages/auth/RegisterPage'
+import { GoogleCallbackPage } from '../pages/auth/GoogleCallbackPage'
 import { DoctorRegistrationPendingPage } from '../pages/auth/DoctorRegistrationPendingPage'
 import { ForgotPasswordPage } from '../pages/auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '../pages/auth/ResetPasswordPage'
@@ -59,6 +60,7 @@ export function AppRoutes() {
           }
         />
         <Route path="/register/pending" element={<DoctorRegistrationPendingPage />} />
+        <Route path="/auth/google/callback" element={<GoogleCallbackPage />} />
         <Route
           path="/forgot-password"
           element={

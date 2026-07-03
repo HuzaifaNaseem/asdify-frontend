@@ -11,7 +11,7 @@ import { PageContainer } from '../../components/ui/PageContainer'
 import { useAuth } from '../../state/AuthContext'
 
 export function LoginPage() {
-  const { login, loginWithGoogle } = useAuth()
+  const { login } = useAuth()
   const location = useLocation()
   const from = location.state?.from
   const [email, setEmail] = useState('')
@@ -33,17 +33,6 @@ export function LoginPage() {
     }
   }
 
-  async function onGoogleToken(accessToken) {
-    setError('')
-    setPending(true)
-    try {
-      await loginWithGoogle(accessToken, from)
-    } catch (err) {
-      setError(err.message ?? 'Could not sign in with Google.')
-    } finally {
-      setPending(false)
-    }
-  }
 
   return (
     <>
@@ -107,10 +96,7 @@ export function LoginPage() {
           </form>
 
           <div className="auth-divider">or</div>
-          <GoogleSignInButton
-            onToken={onGoogleToken}
-            onError={(err) => setError(err?.message || 'Google sign-in failed. Please try again.')}
-          />
+          <GoogleSignInButton redirectTo={typeof from === 'string' ? from : ''} />
 
           <p className="auth-muted">
             New to Asdify? <Link to="/register">Create an account</Link>

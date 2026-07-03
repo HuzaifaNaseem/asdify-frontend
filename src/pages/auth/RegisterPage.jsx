@@ -16,7 +16,7 @@ const ROLES = [
 ]
 
 export function RegisterPage() {
-  const { register, loginWithGoogle } = useAuth()
+  const { register } = useAuth()
   const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -57,18 +57,6 @@ export function RegisterPage() {
     }
   }
 
-  async function onGoogleToken(accessToken) {
-    setError('')
-    setPending(true)
-    try {
-      // Google sign-up always creates/uses a parent account.
-      await loginWithGoogle(accessToken)
-    } catch (err) {
-      setError(err.message ?? 'Could not sign up with Google.')
-    } finally {
-      setPending(false)
-    }
-  }
 
   return (
     <>
@@ -160,10 +148,7 @@ export function RegisterPage() {
           {role === 'parent' ? (
             <>
               <div className="auth-divider">or</div>
-              <GoogleSignInButton
-                onToken={onGoogleToken}
-                onError={(err) => setError(err?.message || 'Google sign-up failed. Please try again.')}
-              />
+              <GoogleSignInButton />
             </>
           ) : null}
 

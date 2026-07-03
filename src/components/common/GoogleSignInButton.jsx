@@ -1,43 +1,4 @@
-import { useEffect, useRef } from 'react'
-
-// Client IDs are public identifiers, so a baked-in default keeps production
-// working without a Vercel env var; override with VITE_GOOGLE_CLIENT_ID if needed.
-const GOOGLE_CLIENT_ID =
-  import.meta.env.VITE_GOOGLE_CLIENT_ID ||
-  '610907083663-ckm7qt7plfaufikginr4p9pkjkgh6uko.apps.googleusercontent.com'
-
-const GSI_SRC = 'https://accounts.google.com/gsi/client'
-
-let gsiPromise = null
-
-/** Load Google Identity Services once, shared across all button instances. */
-function loadGsi() {
-  if (gsiPromise) return gsiPromise
-  gsiPromise = new Promise((resolve, reject) => {
-    if (typeof window === 'undefined') {
-      reject(new Error('No window'))
-      return
-    }
-    if (window.google?.accounts?.oauth2) {
-      resolve()
-      return
-    }
-    const existing = document.querySelector(`script[src="${GSI_SRC}"]`)
-    if (existing) {
-      existing.addEventListener('load', () => resolve())
-      existing.addEventListener('error', () => reject(new Error('Failed to load Google script')))
-      return
-    }
-    const s = document.createElement('script')
-    s.src = GSI_SRC
-    s.async = true
-    s.defer = true
-    s.onload = () => resolve()
-    s.onerror = () => reject(new Error('Failed to load Google script'))
-    document.head.appendChild(s)
-  })
-  return gsiPromise
-}
+import { getApiBaseURL } from '../../services/api'
 
 /** Google's four-colour "G" mark. */
 function GoogleGlyph() {
@@ -52,75 +13,15 @@ function GoogleGlyph() {
 }
 
 /**
- * Custom, fully-styled "Continue with Google" button. On click it opens
- * Google's OAuth popup and returns an access token to `onToken(token)`.
- * Errors go to `onError(err)`.
+ * "Continue with Google" button using the server-side redirect flow. Clicking
+ * it navigates the whole page to the backend, which redirects to Google and
+ * back — no popup, no third-party cookies, no browser SDK to be blocked.
  */
-export function GoogleSignInButton({ onToken, onError, label = 'Continue with Google' }) {
-  const clientRef = useRef(null)
-  const onTokenRef = useRef(onToken)
-  const onErrorRef = useRef(onError)
-  useEffect(() => {
-    onTokenRef.current = onToken
-    onErrorRef.current = onError
-  })
-
-  useEffect(() => {
-    let cancelled = false
-    loadGsi()
-      .then(() => {
-        if (cancelled || !window.google?.accounts?.oauth2) return
-        clientRef.current = window.google.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
-          scope: 'openid email profile',
-          callback: (resp) => {
-            if (resp?.error) {
-              console.error('[Google] token callback error:', resp)
-              onErrorRef.current?.(new Error(resp.error_description || resp.error))
-              return
-            }
-            if (resp?.access_token) onTokenRef.current?.(resp.access_token)
-            else onErrorRef.current?.(new Error('No access token returned by Google.'))
-          },
-          // Fires when the popup can't open / is closed / origin is rejected —
-          // without this, those failures are silent.
-          error_callback: (err) => {
-            console.error('[Google] popup error:', err)
-            const map = {
-              popup_failed_to_open: 'The Google popup was blocked. Please allow pop-ups for this site and try again.',
-              popup_closed: 'Google sign-in was cancelled.',
-            }
-            onErrorRef.current?.(new Error(map[err?.type] || err?.message || 'Google sign-in failed.'))
-          },
-        })
-        console.info('[Google] token client initialized')
-      })
-      .catch((err) => {
-        console.error('[Google] failed to load GSI script:', err)
-        if (!cancelled) onErrorRef.current?.(err)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
+export function GoogleSignInButton({ redirectTo = '', label = 'Continue with Google' }) {
   function handleClick() {
-    console.info('[Google] button clicked; client ready =', Boolean(clientRef.current))
-    if (!clientRef.current) {
-      onErrorRef.current?.(
-        new Error(
-          'Google is still loading (or was blocked by an extension/ad-blocker). Wait a moment or disable blockers for this site, then click again.',
-        ),
-      )
-      return
-    }
-    // Called synchronously inside the user gesture so the popup is not blocked.
-    try {
-      clientRef.current.requestAccessToken()
-    } catch (err) {
-      console.error('[Google] requestAccessToken threw:', err)
-      onErrorRef.current?.(err instanceof Error ? err : new Error('Could not open Google sign-in.'))
-    }
+    const origin = getApiBaseURL()
+    const qs = redirectTo ? `?redirect=${encodeURIComponent(redirectTo)}` : ''
+    window.location.href = `${origin}/api/auth/google/start${qs}`
   }
 
   return (

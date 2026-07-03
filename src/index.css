@@ -860,6 +860,11 @@ img, svg { display: block; max-width: 100%; }
   font-size: 0.95rem;
   transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
 }
+/* Textareas: allow only vertical resize (no diagonal grip sprawling sideways). */
+textarea.ui-input {
+  resize: vertical;
+  min-height: 6.5rem;
+}
 .ui-input:focus {
   outline: none;
   border-color: var(--accent);
@@ -2172,6 +2177,29 @@ img, svg { display: block; max-width: 100%; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 0.6rem;
+}
+
+/* Card-style the multi-select checkboxes so they match the radio scale above. */
+.assessment-checkbox-grid .ui-check {
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 0.85rem;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.assessment-checkbox-grid .ui-check:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+.assessment-checkbox-grid .ui-check:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.assessment-checkbox-grid .ui-check input {
+  accent-color: var(--accent);
+  flex-shrink: 0;
 }
 
 .history-list {

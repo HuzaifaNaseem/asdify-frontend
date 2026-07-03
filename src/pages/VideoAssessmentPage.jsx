@@ -11,6 +11,11 @@ import { useAuth } from '../state/AuthContext'
 
 const MIN_SEC = 30
 const MAX_SEC = 60
+// The backend accepts a ±2s grace (MIN/MAX_VIDEO_DURATION_TOLERANCE = 28/62),
+// so gate on the same tolerance rather than hard-blocking a clip a second or
+// two outside the recommended 30–60s window.
+const MIN_ACCEPT = 28
+const MAX_ACCEPT = 62
 const ACCEPT = 'video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov'
 const STEP_DEFS = [
   { key: 'uploading', label: 'Uploading your video securely' },
@@ -112,7 +117,7 @@ export function VideoAssessmentPage() {
     if (!el || !Number.isFinite(el.duration)) return
     const d = el.duration
     setDuration(d)
-    if (d < MIN_SEC || d > MAX_SEC) {
+    if (d < MIN_ACCEPT || d > MAX_ACCEPT) {
       setDurationError(`This clip is ${d.toFixed(1)}s long. Please use a video between ${MIN_SEC} and ${MAX_SEC} seconds.`)
     } else {
       setDurationError('')
@@ -148,7 +153,7 @@ export function VideoAssessmentPage() {
       setError('Wait for the preview to load, or try another file.')
       return
     }
-    if (duration < MIN_SEC || duration > MAX_SEC) {
+    if (duration < MIN_ACCEPT || duration > MAX_ACCEPT) {
       setError(durationError || `Clip length must be between ${MIN_SEC} and ${MAX_SEC} seconds.`)
       return
     }

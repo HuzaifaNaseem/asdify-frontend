@@ -76,11 +76,22 @@ export function GoogleSignInButton({ onToken, onError, label = 'Continue with Go
           scope: 'openid email profile',
           callback: (resp) => {
             if (resp?.error) {
-              onErrorRef.current?.(new Error(resp.error))
+              console.error('[Google] token callback error:', resp)
+              onErrorRef.current?.(new Error(resp.error_description || resp.error))
               return
             }
             if (resp?.access_token) onTokenRef.current?.(resp.access_token)
             else onErrorRef.current?.(new Error('No access token returned by Google.'))
+          },
+          // Fires when the popup can't open / is closed / origin is rejected —
+          // without this, those failures are silent.
+          error_callback: (err) => {
+            console.error('[Google] popup error:', err)
+            const map = {
+              popup_failed_to_open: 'The Google popup was blocked. Please allow pop-ups for this site and try again.',
+              popup_closed: 'Google sign-in was cancelled.',
+            }
+            onErrorRef.current?.(new Error(map[err?.type] || err?.message || 'Google sign-in failed.'))
           },
         })
         setReady(true)

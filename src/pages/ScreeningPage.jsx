@@ -155,6 +155,20 @@ export function ScreeningPage() {
           diagnosis.
         </p>
 
+        <div className="screening-more-note">
+          <span>
+            <strong>Also available:</strong> AI <strong>image</strong> and <strong>video</strong>{' '}
+            screening.{' '}
+          </span>
+          {user ? (
+            <Link to="/dashboard/asd-tests">Open the AI assessments in your dashboard →</Link>
+          ) : (
+            <span>
+              Create a <Link to="/register">free account</Link> to run them from your dashboard.
+            </span>
+          )}
+        </div>
+
         {error ? (
           <Alert title="Screening error" variant="error">
             {error}

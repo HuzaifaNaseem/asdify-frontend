@@ -111,6 +111,13 @@ export function LandingPage() {
               <IconLock className="hero__note-icon-svg" />
               <span>No payment required. Results are not a clinical diagnosis.</span>
             </p>
+            <p className="hero__note hero__note--extra">
+              <span>
+                “Start Free Screening” runs the quick questionnaire. AI <strong>image</strong> and{' '}
+                <strong>video</strong> screening are included free with an account —{' '}
+                <Link to="/register">create one</Link> to use them.
+              </span>
+            </p>
           </div>
 
           <div className="hero__visual">

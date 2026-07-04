@@ -5723,3 +5723,24 @@ img, video, canvas, svg { max-width: 100%; height: auto; }
   /* Result banner: stack the score under the band label so it never crowds. */
   .screening-result-banner__top { flex-direction: column; gap: 0.35rem; }
 }
+
+/* "Also available: image & video" notes (screening page + landing hero) */
+.screening-more-note {
+  margin: 0.4rem 0 0;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+.screening-more-note a { font-weight: 600; color: var(--accent); }
+.hero__note--extra {
+  margin-top: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.hero__note--extra a { color: var(--accent); font-weight: 600; }

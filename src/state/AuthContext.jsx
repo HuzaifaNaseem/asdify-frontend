@@ -48,18 +48,10 @@ export function AuthProvider({ children }) {
   }, [refreshUser])
 
   const redirectAfterAuth = useCallback(
-    (me, redirectTo) => {
-      const safe =
-        typeof redirectTo === 'string' &&
-        redirectTo.startsWith('/') &&
-        !redirectTo.startsWith('//') &&
-        redirectTo !== '/login'
-          ? redirectTo
-          : null
-      if (safe) {
-        navigate(safe, { replace: true })
-        return
-      }
+    (me) => {
+      // Always land on the user's own dashboard after signing in — clean and
+      // predictable, rather than dropping them back onto whatever public page
+      // they happened to be on.
       if (me.role === 'admin') navigate('/admin/dashboard', { replace: true })
       else if (me.role === 'doctor') navigate('/doctor/dashboard', { replace: true })
       else navigate('/dashboard', { replace: true })
